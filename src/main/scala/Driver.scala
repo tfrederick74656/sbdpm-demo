@@ -1,11 +1,13 @@
+// Version 1.02 for IJCAI-16 Tutorial
+
 package sbdpm
 
+import java.util.Arrays
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
-import java.util.Arrays
 import scala.collection.JavaConversions
 import scala.io.Source
 
@@ -19,10 +21,10 @@ object Demo {
 
 	// HDFS Configuration Files
 	private final val CORE_SITE_CONFIG_PATH = new Path("/usr/hdp/current/hadoop-client/conf/core-site.xml")
-	private final val HDFS_SITE_CONFIG_PATH = new Path("//usr/hdp/current/hadoop-client/conf/hdfs-site.xml")
+	private final val HDFS_SITE_CONFIG_PATH = new Path("/usr/hdp/current/hadoop-client/conf/hdfs-site.xml")
 
 	def main(args: Array[String]): Unit = {
-	
+
 		// Configure SparkContext
 		val conf = new SparkConf()
 			.setMaster(SPARK_MASTER)
@@ -41,13 +43,13 @@ object Demo {
 		System.out.println(" Exhibit \'tweet\': Top Hashtags")
 		System.out.println(" Exhibit \'kmeans\': KMeans Clustering")
 		System.out.println("\n----------------------------------------------------------------\n");
-		
+
 		// Exhibit: HelloWorld
 		if(args(0) == "hw") {
 			System.out.println("Running exhibit: HelloWorld")
 			System.out.println("Hello, World!")
 		}
-		
+
 		// Exhibit: Top Hashtags
 		if(args(0) == "tweet") {
 			System.out.println("Running exhibit: Twitter Data")
@@ -59,13 +61,14 @@ object Demo {
 			val htStats = hashtags.map(h => (h, 1)).reduceByKey(_+_)
 			val top100 = htStats.sortBy(_._2, false).take(100)
 
+			// Output Results
 			top100.foreach(x => System.out.println(x._1 + "\t\t" + x._2))
 		}
-		
+
 		// Exhibit: KMeans Clustering
 		if(args(0) == "kmeans") {
 			System.out.println("Running exhibit: KMeans Clustering")
-			
+
 			// Do Clustering
 			val lines = sc.textFile(FileSystem.get(configuration).getUri + DATASET_PATH_PUBMED)
 			val papers = Helper.parseData(lines)
